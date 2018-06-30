@@ -13,6 +13,8 @@
 package org.artofsolving.jodconverter;
 
 import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -67,6 +69,19 @@ public class OfficeDocumentConverter {
         String inputExtension = FilenameUtils.getExtension(inputFile.getName());
         DocumentFormat inputFormat = formatRegistry.getFormatByExtension(inputExtension);
         StandardConversionTask conversionTask = new StandardConversionTask(inputFile, outputFile, outputFormat);
+        conversionTask.setDefaultLoadProperties(defaultLoadProperties);
+        conversionTask.setInputFormat(inputFormat);
+        officeManager.execute(conversionTask);
+    }
+    
+    public void convert(InputStream inputStream, OutputStream outputStream, String fileFmt) throws OfficeException {
+        DocumentFormat outputFormat = formatRegistry.getFormatByExtension(fileFmt);
+        convert(inputStream, outputStream, fileFmt, outputFormat);
+    }
+
+    public void convert(InputStream inputStream, OutputStream outputStream, String inputFileFmt,  DocumentFormat outputFormat) throws OfficeException {
+        DocumentFormat inputFormat = formatRegistry.getFormatByExtension(inputFileFmt);
+        SteamConversionTask conversionTask = new SteamConversionTask(inputStream, outputStream, outputFormat);
         conversionTask.setDefaultLoadProperties(defaultLoadProperties);
         conversionTask.setInputFormat(inputFormat);
         officeManager.execute(conversionTask);
