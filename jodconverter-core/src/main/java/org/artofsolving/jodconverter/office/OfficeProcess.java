@@ -58,8 +58,16 @@ class OfficeProcess {
         ProcessQuery processQuery = new ProcessQuery("soffice.bin", unoUrl.getAcceptString());
         long existingPid = processManager.findPid(processQuery);
     	if (!(existingPid == PID_NOT_FOUND || existingPid == PID_UNKNOWN)) {
+    		try {
+    			processManager.kill(null, existingPid);
+			} catch (IOException e) {
+				throw new IllegalStateException(String.format("a process with acceptString '%s' is already running; pid %d",
+						unoUrl.getAcceptString(), existingPid));
+			}
+    		/*
 			throw new IllegalStateException(String.format("a process with acceptString '%s' is already running; pid %d",
 			        unoUrl.getAcceptString(), existingPid));
+			        */
         }
     	if (!restart) {
     	    prepareInstanceProfileDir();
@@ -70,7 +78,7 @@ class OfficeProcess {
         	command.addAll(Arrays.asList(runAsArgs));
         }
         command.add(executable.getAbsolutePath());
-        command.add("-accept=" + unoUrl.getAcceptString() + ";urp;");
+        command.add("--accept=\"" + unoUrl.getAcceptString() + ";urp;\"");
         command.add("-env:UserInstallation=" + OfficeUtils.toUrl(instanceProfileDir));
         command.add("-headless");
         command.add("-nocrashreport");
@@ -83,7 +91,7 @@ class OfficeProcess {
         if (PlatformUtils.isWindows()) {
             addBasisAndUrePaths(processBuilder);
         }
-        logger.info(String.format("starting process with acceptString '%s' and profileDir '%s'", unoUrl, instanceProfileDir));
+        logger.info(String.format("starting process with acceptString '%s' and profileDir '%s', command line is : %s", unoUrl, instanceProfileDir, command.toString()));
         process = processBuilder.start();
         pid = processManager.findPid(processQuery);
         if (pid == PID_NOT_FOUND) {

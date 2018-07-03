@@ -25,13 +25,17 @@ import java.util.Map;
 import org.artofsolving.jodconverter.office.OfficeContext;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.artofsolving.jodconverter.office.OfficeTask;
+import org.artofsolving.jodconverter.office.OfficeUtils;
 
+import com.sun.star.beans.PropertyValue;
 import com.sun.star.frame.XComponentLoader;
 import com.sun.star.frame.XStorable;
+import com.sun.star.frame.XStorable2;
 import com.sun.star.io.IOException;
 import com.sun.star.lang.IllegalArgumentException;
 import com.sun.star.lang.XComponent;
 import com.sun.star.task.ErrorCodeIOException;
+import com.sun.star.uno.UnoRuntime;
 import com.sun.star.util.CloseVetoException;
 import com.sun.star.util.XCloseable;
 
@@ -84,7 +88,7 @@ public abstract class AbstractStreamConversionTask implements OfficeTask {
         XComponent document = null;
         try {
           //  document = loader.loadComponentFromURL(toUrl(inputStream), "_blank", 0, toUnoProperties(loadProperties));
-        		document = loader.loadComponentFromURL("private:stream", "_blank", 0, toUnoProperties(loadProperties)); 
+        	document = loader.loadComponentFromURL("private:stream", "_blank", 0, toUnoProperties(loadProperties)); 
         } catch (IllegalArgumentException illegalArgumentException) {
             throw new OfficeException("could not load document", illegalArgumentException);
         } catch (ErrorCodeIOException errorCodeIOException) {
@@ -116,13 +120,17 @@ public abstract class AbstractStreamConversionTask implements OfficeTask {
         if (storeProperties == null) {
             throw new OfficeException("unsupported conversion");
         }
+        
         try {
-            cast(XStorable.class, document).storeToURL("private:stream", toUnoProperties(storeProperties));
+        	XStorable xstorable = (XStorable) UnoRuntime.queryInterface(XStorable.class,document);
+          //  cast(XStorable.class, document).storeToURL("private:stream", toUnoProperties(storeProperties));
+          //  cast(XStorable2.class, document).storeSelf(toUnoProperties(storeProperties));
+        	xstorable.storeToURL("private:stream", toUnoProperties(storeProperties));
         } catch (ErrorCodeIOException errorCodeIOException) {
             throw new OfficeException("could not store document, errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
         } catch (IOException ioException) {
             throw new OfficeException("could not store document: " , ioException);
-        }
+		}
     }
 
 }

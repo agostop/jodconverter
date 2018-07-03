@@ -62,67 +62,67 @@ public class ConvertStream {
         return options;
     }
 
-    public static void main(String[] arguments) throws ParseException, JSONException, IOException {
-        CommandLineParser commandLineParser = new PosixParser();
-        CommandLine commandLine = commandLineParser.parse(OPTIONS, arguments);
-
-        String outputFormat = null;
-        if (commandLine.hasOption(OPTION_OUTPUT_FORMAT.getOpt())) {
-            outputFormat = commandLine.getOptionValue(OPTION_OUTPUT_FORMAT.getOpt());
-        }
-
-        int port = DEFAULT_OFFICE_PORT;
-        if (commandLine.hasOption(OPTION_PORT.getOpt())) {
-            port = Integer.parseInt(commandLine.getOptionValue(OPTION_PORT.getOpt()));
-        }
-
-        String[] fileNames = commandLine.getArgs();
-        if ((outputFormat == null && fileNames.length != 2) || fileNames.length < 1) {
-            String syntax = "java -jar jodconverter-core.jar [options] input-file output-file\n"
-                    + "or [options] -o output-format input-file [input-file...]";
-            HelpFormatter helpFormatter = new HelpFormatter();
-            helpFormatter.printHelp(syntax, OPTIONS);
-            System.exit(STATUS_INVALID_ARGUMENTS);
-        }
-
-        DocumentFormatRegistry registry;
-        if (commandLine.hasOption(OPTION_REGISTRY.getOpt())) {
-            File registryFile = new File(commandLine.getOptionValue(OPTION_REGISTRY.getOpt()));
-            registry = new JsonDocumentFormatRegistry(FileUtils.readFileToString(registryFile));
-        } else {
-            registry = new DefaultDocumentFormatRegistry();
-        }
-
-        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
-        configuration.setPortNumber(port);
-        if (commandLine.hasOption(OPTION_TIMEOUT.getOpt())) {
-            int timeout = Integer.parseInt(commandLine.getOptionValue(OPTION_TIMEOUT.getOpt()));
-            configuration.setTaskExecutionTimeout(timeout * 1000);
-        }
-        if (commandLine.hasOption(OPTION_USER_PROFILE.getOpt())) {
-            String templateProfileDir = commandLine.getOptionValue(OPTION_USER_PROFILE.getOpt());
-            configuration.setTemplateProfileDir(new File(templateProfileDir));
-        }
-
-        OfficeManager officeManager = configuration.buildOfficeManager();
-        officeManager.start();
-        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager, registry);
-        try {
-            if (outputFormat == null) {
-                File inputFile = new File(fileNames[0]);
-                File outputFile = new File(fileNames[1]);
-                converter.convert(new FileInputStream(inputFile), new FileOutputStream(outputFile), FilenameUtils.getExtension(inputFile.getName()));
-            } else {
-                for (int i = 0; i < fileNames.length; i++) {
-                    File inputFile = new File(fileNames[i]);
-                    String outputName = FilenameUtils.getBaseName(fileNames[i]) + "." + outputFormat;
-                    File outputFile = new File(FilenameUtils.getFullPath(fileNames[i]) + outputName);
-                    converter.convert(new FileInputStream(inputFile), new FileOutputStream(outputFile), FilenameUtils.getExtension(inputFile.getName()));
-                }
-            }
-        } finally {
-            officeManager.stop();
-        }
-    }
+//    public static void main(String[] arguments) throws ParseException, JSONException, IOException {
+//        CommandLineParser commandLineParser = new PosixParser();
+//        CommandLine commandLine = commandLineParser.parse(OPTIONS, arguments);
+//
+//        String outputFormat = null;
+//        if (commandLine.hasOption(OPTION_OUTPUT_FORMAT.getOpt())) {
+//            outputFormat = commandLine.getOptionValue(OPTION_OUTPUT_FORMAT.getOpt());
+//        }
+//
+//        int port = DEFAULT_OFFICE_PORT;
+//        if (commandLine.hasOption(OPTION_PORT.getOpt())) {
+//            port = Integer.parseInt(commandLine.getOptionValue(OPTION_PORT.getOpt()));
+//        }
+//
+//        String[] fileNames = commandLine.getArgs();
+//        if ((outputFormat == null && fileNames.length != 2) || fileNames.length < 1) {
+//            String syntax = "java -jar jodconverter-core.jar [options] input-file output-file\n"
+//                    + "or [options] -o output-format input-file [input-file...]";
+//            HelpFormatter helpFormatter = new HelpFormatter();
+//            helpFormatter.printHelp(syntax, OPTIONS);
+//            System.exit(STATUS_INVALID_ARGUMENTS);
+//        }
+//
+//        DocumentFormatRegistry registry;
+//        if (commandLine.hasOption(OPTION_REGISTRY.getOpt())) {
+//            File registryFile = new File(commandLine.getOptionValue(OPTION_REGISTRY.getOpt()));
+//            registry = new JsonDocumentFormatRegistry(FileUtils.readFileToString(registryFile));
+//        } else {
+//            registry = new DefaultDocumentFormatRegistry();
+//        }
+//
+//        DefaultOfficeManagerConfiguration configuration = new DefaultOfficeManagerConfiguration();
+//        configuration.setPortNumber(port);
+//        if (commandLine.hasOption(OPTION_TIMEOUT.getOpt())) {
+//            int timeout = Integer.parseInt(commandLine.getOptionValue(OPTION_TIMEOUT.getOpt()));
+//            configuration.setTaskExecutionTimeout(timeout * 1000);
+//        }
+//        if (commandLine.hasOption(OPTION_USER_PROFILE.getOpt())) {
+//            String templateProfileDir = commandLine.getOptionValue(OPTION_USER_PROFILE.getOpt());
+//            configuration.setTemplateProfileDir(new File(templateProfileDir));
+//        }
+//
+//        OfficeManager officeManager = configuration.buildOfficeManager();
+//        officeManager.start();
+//        OfficeDocumentConverter converter = new OfficeDocumentConverter(officeManager, registry);
+//        try {
+//            if (outputFormat == null) {
+//                File inputFile = new File(fileNames[0]);
+//                File outputFile = new File(fileNames[1]);
+//                converter.convert(new FileInputStream(inputFile), new FileOutputStream(outputFile), FilenameUtils.getExtension(inputFile.getName()));
+//            } else {
+//                for (int i = 0; i < fileNames.length; i++) {
+//                    File inputFile = new File(fileNames[i]);
+//                    String outputName = FilenameUtils.getBaseName(fileNames[i]) + "." + outputFormat;
+//                    File outputFile = new File(FilenameUtils.getFullPath(fileNames[i]) + outputName);
+//                    converter.convert(new FileInputStream(inputFile), new FileOutputStream(outputFile), FilenameUtils.getExtension(inputFile.getName()));
+//                }
+//            }
+//        } finally {
+//            officeManager.stop();
+//        }
+//    }
     
 }

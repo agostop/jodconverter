@@ -24,6 +24,8 @@ import org.artofsolving.jodconverter.document.DocumentFormat;
 import org.artofsolving.jodconverter.document.DocumentFormatRegistry;
 import org.artofsolving.jodconverter.office.OfficeException;
 import org.artofsolving.jodconverter.office.OfficeManager;
+import org.artofsolving.jodconverter.stream.OOoInputStream;
+import org.artofsolving.jodconverter.stream.OOoOutputStream;
 
 import com.sun.star.document.UpdateDocMode;
 
@@ -74,16 +76,9 @@ public class OfficeDocumentConverter {
         officeManager.execute(conversionTask);
     }
     
-    public void convert(InputStream inputStream, OutputStream outputStream, String fileFmt) throws OfficeException {
-        DocumentFormat outputFormat = formatRegistry.getFormatByExtension(fileFmt);
-        convert(inputStream, outputStream, fileFmt, outputFormat);
-    }
-
-    public void convert(InputStream inputStream, OutputStream outputStream, String inputFileFmt,  DocumentFormat outputFormat) throws OfficeException {
-        DocumentFormat inputFormat = formatRegistry.getFormatByExtension(inputFileFmt);
-        SteamConversionTask conversionTask = new SteamConversionTask(inputStream, outputStream, outputFormat);
+    public void convert(OOoInputStream inputStream, OOoOutputStream outputStream) throws OfficeException {
+        SteamConversionTask conversionTask = new SteamConversionTask(inputStream, outputStream);
         conversionTask.setDefaultLoadProperties(defaultLoadProperties);
-        conversionTask.setInputFormat(inputFormat);
         officeManager.execute(conversionTask);
     }
 

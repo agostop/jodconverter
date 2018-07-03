@@ -18,3 +18,9 @@ modify it under either (at your option) of the following licenses
    -> see LICENSE-LGPL.txt
 2. The Apache License, Version 2.0
    -> see LICENSE-Apache.txt
+
+
+Update
+---------
+
+Add convert stream function.

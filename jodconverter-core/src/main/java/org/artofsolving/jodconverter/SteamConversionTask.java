@@ -33,22 +33,14 @@ import com.sun.star.util.XRefreshable;
 
 public class SteamConversionTask extends AbstractStreamConversionTask{
 
-    private final DocumentFormat outputFormat;
-
     private Map<String,?> defaultLoadProperties;
-    private DocumentFormat inputFormat;
 
-    public SteamConversionTask(InputStream inputFile, OutputStream outputFile, DocumentFormat outputFormat) {
-        super(inputFile, outputFile);
-        this.outputFormat = outputFormat;
+    public SteamConversionTask(InputStream inputStream, OutputStream outputStream) {
+        super(inputStream, outputStream);
     }
 
     public void setDefaultLoadProperties(Map<String, ?> defaultLoadProperties) {
         this.defaultLoadProperties = defaultLoadProperties;
-    }
-
-    public void setInputFormat(DocumentFormat inputFormat) {
-        this.inputFormat = inputFormat;
     }
 
     @Override
@@ -65,27 +57,18 @@ public class SteamConversionTask extends AbstractStreamConversionTask{
         if (defaultLoadProperties != null) {
             loadProperties.putAll(defaultLoadProperties);
         }
-        if (inputFormat != null && inputFormat.getLoadProperties() != null) {
-            loadProperties.putAll(inputFormat.getLoadProperties());
-        }
+        loadProperties.put("InputStream", inputStream);
+        loadProperties.put("Hidden", new Boolean(true));
         
-        ByteArrayToXInputStreamAdapter byteArray = null;
-        try {
-        		byteArray = new ByteArrayToXInputStreamAdapter(IOUtils.toByteArray(inputStream));
-		} catch (IOException e) {
-			byteArray = null;
-		}
-		loadProperties.put("InputStream", byteArray);
         return loadProperties;
     }
 
     @Override
     protected Map<String,?> getStoreProperties(OutputStream outputStream, XComponent document) {
-        DocumentFamily family = OfficeDocumentUtils.getDocumentFamily(document);
         
         Map<String,Object> storeProperties = new HashMap<String,Object>();
-        storeProperties.putAll(outputFormat.getStoreProperties(family));
-        storeProperties.put("OutputStream", new OutputStreamToXOutputStreamAdapter(outputStream));
+        storeProperties.put("OutputStream", outputStream);
+        storeProperties.put("FilterName", "writer_pdf_Export");
         
         return storeProperties;
     }
