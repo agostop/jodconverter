@@ -122,10 +122,7 @@ public abstract class AbstractStreamConversionTask implements OfficeTask {
         }
         
         try {
-        	XStorable xstorable = (XStorable) UnoRuntime.queryInterface(XStorable.class,document);
-          //  cast(XStorable.class, document).storeToURL("private:stream", toUnoProperties(storeProperties));
-          //  cast(XStorable2.class, document).storeSelf(toUnoProperties(storeProperties));
-        	xstorable.storeToURL("private:stream", toUnoProperties(storeProperties));
+            cast(XStorable.class, document).storeToURL("private:stream", toUnoProperties(storeProperties));
         } catch (ErrorCodeIOException errorCodeIOException) {
             throw new OfficeException("could not store document, errorCode: " + errorCodeIOException.ErrCode, errorCodeIOException);
         } catch (IOException ioException) {
