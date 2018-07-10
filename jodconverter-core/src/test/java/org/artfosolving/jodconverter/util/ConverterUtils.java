@@ -36,7 +36,7 @@ public class ConverterUtils {
     }
 
     private Map<String,?> getLoadProperties() {
-        Map<String,Object> loadProperties = new HashMap<>(10);
+        Map<String,Object> loadProperties = new HashMap<String, Object>(10);
         loadProperties.put("Hidden", true);
         loadProperties.put("ReadOnly", true);
         loadProperties.put("UpdateDocMode", UpdateDocMode.QUIET_UPDATE);

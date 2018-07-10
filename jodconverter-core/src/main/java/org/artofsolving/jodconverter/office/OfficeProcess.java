@@ -78,20 +78,22 @@ class OfficeProcess {
         	command.addAll(Arrays.asList(runAsArgs));
         }
         command.add(executable.getAbsolutePath());
-        command.add("--accept=\"" + unoUrl.getAcceptString() + ";urp;\"");
+        command.add("--accept=" + unoUrl.getAcceptString() + ";urp;");
         command.add("-env:UserInstallation=" + OfficeUtils.toUrl(instanceProfileDir));
-        command.add("-headless");
-        command.add("-nocrashreport");
-        command.add("-nodefault");
-        command.add("-nofirststartwizard");
-        command.add("-nolockcheck");
-        command.add("-nologo");
-        command.add("-norestore");
+        command.add("--headless");
+        command.add("--nocrashreport");
+        command.add("--nodefault");
+        command.add("--nofirststartwizard");
+        command.add("--nolockcheck");
+        command.add("--nologo");
+        command.add("--norestore");
+       // command.add("--strace");
         ProcessBuilder processBuilder = new ProcessBuilder(command);
         if (PlatformUtils.isWindows()) {
             addBasisAndUrePaths(processBuilder);
         }
         logger.info(String.format("starting process with acceptString '%s' and profileDir '%s', command line is : %s", unoUrl, instanceProfileDir, command.toString()));
+        logger.info(processBuilder.environment().toString());
         process = processBuilder.start();
         pid = processManager.findPid(processQuery);
         if (pid == PID_NOT_FOUND) {
